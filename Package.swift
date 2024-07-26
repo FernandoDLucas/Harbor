@@ -43,6 +43,7 @@ let package = Package(
         .testTarget(
             name: "HarborTests",
             dependencies: [
+                "Harbor",
                 "HarborMacros",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ]

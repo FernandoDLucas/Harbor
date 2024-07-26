@@ -2,32 +2,51 @@ import SwiftCompilerPlugin
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
-
-/// Implementation of the `stringify` macro, which takes an expression
-/// of any type and produces a tuple containing the value of that expression
-/// and the source code that produced the value. For example
-///
-///     #stringify(x + y)
-///
-///  will expand to
-///
-///     (x + y, "x + y")
-public struct StringifyMacro: ExpressionMacro {
-    public static func expansion(
-        of node: some FreestandingMacroExpansionSyntax,
-        in context: some MacroExpansionContext
-    ) -> ExprSyntax {
-        guard let argument = node.argumentList.first?.expression else {
-            fatalError("compiler bug: the macro does not have any arguments")
-        }
-
-        return "(\(argument), \(literal: argument.description))"
-    }
-}
+import SwiftDiagnostics
 
 @main
 struct HarborPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        StringifyMacro.self,
+        DockMacro.self,
     ]
+}
+
+public struct DockMacro: PeerMacro {
+
+    public static func expansion(
+        of node: AttributeSyntax,
+        providingPeersOf declaration: some DeclSyntaxProtocol,
+        in context: some MacroExpansionContext
+    ) throws -> [DeclSyntax] {
+        let mappedProtocol = try ProtocolAtlas.mapProtocol(declaration)
+
+        let enumName = TokenSyntax(stringLiteral: "\(mappedProtocol.declName)\(HarborDefinitions.functionsName.rawValue)")
+        let typeAlias = TypeAliasFactory.make(
+            named: enumName,
+            isPublic: mappedProtocol.isPublic
+        )
+        let enumdecl = try EnumFactory.make(named: enumName, for: mappedProtocol)
+        let functions = try FunctionFactory.make(
+            mappedProtocol.memberBlock, 
+            makePublic: mappedProtocol.isPublic
+        )
+        let varDecl = DeclSyntax(stringLiteral: HarborStatements.dockVar(enumName.text).statement)
+        var block = MemberBlockSyntax(members: [
+            MemberBlockItemSyntax(decl: typeAlias),
+            MemberBlockItemSyntax(decl: varDecl),
+            MemberBlockItemSyntax(decl: enumdecl)
+        ])
+
+        block.members.append(contentsOf: functions)
+        let classdc = ClassDeclSyntax(
+            modifiers: .make(public: mappedProtocol.isPublic),
+            classKeyword: TokenSyntax.keyword(.class),
+            name: .identifier("\(mappedProtocol.declName)Dock"),
+            inheritanceClause: .defaultWith(mappedProtocol.name.text),
+            memberBlock: block
+        )
+
+        return [DeclSyntax(classdc)]
+    }
+
 }
