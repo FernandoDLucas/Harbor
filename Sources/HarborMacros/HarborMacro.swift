@@ -25,9 +25,10 @@ public struct DockMacro: PeerMacro {
             named: enumName,
             isPublic: mappedProtocol.isPublic
         )
-        let enumdecl = try EnumFactory.make(named: enumName, for: mappedProtocol)
+        let mappedFuncs = try FunctionAtlas.mapFunctions(mappedProtocol.memberBlock)
+        let enumdecl = try EnumFactory.make(named: enumName, funcs: mappedFuncs)
         let functions = try FunctionFactory.make(
-            mappedProtocol.memberBlock, 
+            functions: mappedFuncs,
             makePublic: mappedProtocol.isPublic
         )
         let varDecl = DeclSyntax(stringLiteral: HarborStatements.dockVar(enumName.text).statement)

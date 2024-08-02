@@ -5,16 +5,16 @@
 //  Created by Fernando de Lucas da Silva Gomes on 24/07/24.
 //
 
-public final class Dockyard<Members: Identifiable> {
+public final class Dockyard<Members: Vessel> {
 
-    private var vessels: [Ship]
+    private var vessels: [Ship<Members>]
 
-    init(vessels: [Members]) {
+    public init(vessels: [Members]) {
         self.vessels = vessels.map { .init(id: $0.id) }
     }
 
-    func ship(vessel: Members) -> Ship {
-        vessels.first(where: { vessel.id.hashValue == $0.id.hashValue })!
+    func ship(vessel: Members) -> Ship<Members> {
+        vessels.first(where: { vessel == $0.id })!
     }
 
 }

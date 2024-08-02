@@ -17,14 +17,16 @@ enum HarborDefinitions: TokenSyntax {
 }
 
 enum HarborStatements {
-    case throwsReturn(String), `return`(String, String), dockVar(String)
-    
+    case getVessel(String), throwsReturn, `return`(String), dockVar(String)
+
     var statement: String {
         switch self {
-        case .throwsReturn(let funcName):
-            return "try dockyard.ship(vessel: .\(funcName)).try()"
-        case .return(let funcName, let returnType):
-            return "return dockyard.ship(vessel: .\(funcName))\(returnType)"
+        case .throwsReturn:
+            return "try ship.try()"
+        case .getVessel(let funcName):
+            return "let ship = dockyard.ship(vessel: .\(funcName))"
+        case .return(let returnType):
+            return "return ship\(returnType)"
         case .dockVar(let enumName):
             return "var dockyard: Dockyard<\(enumName)> = .init(vessels: \(enumName).allCases)"
         }

@@ -12,9 +12,9 @@ import SwiftSyntax
 extension DeclModifierListSyntax {
     
     var containsPublicModifier: Bool {
-        self.first {
-            $0 == DeclModifierSyntax(name: .keyword(.public))
-        } != nil
+        self.first (where: {
+            $0.name.text == TokenSyntax.pub.text
+        }) != nil
     }
 
     static func make(`public`: Bool) -> DeclModifierListSyntax {

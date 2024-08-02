@@ -11,22 +11,20 @@ import SwiftSyntax
 
 enum FunctionAtlas {
 
-    static func mapFunction(_ block: MemberBlockSyntax) throws -> [FunctionDeclSyntax] {
-        try block
+    static func mapFunctions(_ block: MemberBlockSyntax) throws -> [FunctionMap] {
+        let functions = block
             .members
-            .compactMap { $0.decl.as(FunctionDeclSyntax.self) }
-            .map { try mapFunction($0) }
+            .compactMap {
+                $0.decl.as(FunctionDeclSyntax.self)
+            }
+            .map {
+                FunctionMap(
+                    harborName: $0.funcName,
+                    decl: $0
+                )
+            }
+        return addNumberToRepeatedNames(in: functions, keyPath: \.harborName)
     }
 
-    static func mapFunction(_ decl: [FunctionDeclSyntax]) throws -> [FunctionDeclSyntax] {
-        try decl.map { try mapFunction($0) }
-    }
-
-    static func mapFunction(_ decl: FunctionDeclSyntax) throws -> FunctionDeclSyntax {
-        guard let functionDecl = decl.as(FunctionDeclSyntax.self) else {
-            throw DockError.isNotFunction(decl)
-        }
-        return functionDecl
-    }
 
 }

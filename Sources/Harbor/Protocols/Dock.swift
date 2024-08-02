@@ -14,9 +14,9 @@ public protocol Dock {
 
 extension Dock {
 
-    func ship(
+    public func ship(
         _ vessel: Vessels
-    ) -> Ship {
+    ) -> Ship<Vessels> {
         dockyard.ship(vessel: vessel)
     }
 

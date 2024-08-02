@@ -9,7 +9,7 @@
 
 enum DockError: Error, CustomStringConvertible {
 
-    case isNotProtocol, isNotFunction(Any), returnClauseNotMapped(Any)
+    case isNotProtocol, isNotFunction(Any), typeNotMapped(Any)
     
     var description: String {
         switch self {
@@ -17,8 +17,8 @@ enum DockError: Error, CustomStringConvertible {
             "@Dock can only be used at the top of protocol declarations"
         case .isNotFunction(let arg):
             "Argument \(arg) is not a function"
-        case .returnClauseNotMapped(let arg):
-            "Return clause \(arg) is not mapped on DockErrorFactory"
+        case .typeNotMapped(let arg):
+            "Type \(arg) is not mapped on DockErrorFactory"
         }
     }
 

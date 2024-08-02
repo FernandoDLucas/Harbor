@@ -7,20 +7,16 @@
 
 import Foundation
 
-public final class Ship {
+public final class Ship<Member: Vessel> {
 
-    let id: any Hashable
-    var error: Error?
-    var value: Any?
+    let id: Member
+    public var error: Error? = nil
+    public var value: Any? = nil
+    public private (set) var invoked: Bool = false
+    public private (set) var parameters = [Any]()
 
-    init(
-        id: any Hashable,
-        error: Error? = nil,
-        value: Any? = nil
-    ) {
+    public init(id: Member) {
         self.id = id
-        self.error = error
-        self.value = value
     }
 
     public func deploy(_ value: Any?) {
@@ -31,25 +27,30 @@ public final class Ship {
         self.error = error
     }
 
-    func result<S>() -> Result<S, Error> {
+    public func invoke(_ parameters: [Any]) {
+        invoked = true
+        self.parameters = parameters
+    }
+
+    public func result<S>() -> Result<S, Error> {
         if let error {
             return .failure(error)
         }
         return .success(value as! S)
     }
 
-    func `as`<S>(_ type: S.Type) -> S {
+    public func `as`<S>(_ type: S.Type) -> S {
         guard let V = value as? S else {
             fatalError("Could not cast")
         }
         return V
     }
 
-    func `asType`<S>(_ type: S.Type) -> S? {
+    public func `asType`<S>(_ type: S.Type) -> S? {
         return value as? S
     }
 
-    func `try`() throws {
+    public func `try`() throws {
         if let error {
             throw error
         }

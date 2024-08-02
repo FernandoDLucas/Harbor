@@ -3,7 +3,7 @@
 //
 //
 //  Created by Fernando de Lucas da Silva Gomes on 26/07/24.
-//  
+//
 //  LinkedIn: https://www.linkedin.com/in/fernandodelucas/
 //
 
@@ -13,7 +13,7 @@ enum EnumFactory {
     
     static func make(
         named: TokenSyntax,
-        for prot: ProtocolDeclSyntax
+        funcs: [FunctionMap]
     ) throws -> EnumDeclSyntax {
         let typeList = InheritedTypeListSyntax {
             InheritedTypeSyntax(type: IdentifierTypeSyntax(name: "String"))
@@ -22,18 +22,43 @@ enum EnumFactory {
         return .init(
             name: named,
             inheritanceClause: InheritanceClauseSyntax(inheritedTypes: typeList),
-            memberBlock: try makeBlock(funcList: prot.functionsList)
+            memberBlock: try makeBlock(funcs: funcs)
+        )
+    }
+    
+    static func makeNestedBlock(function: FunctionMap) throws -> StructDeclSyntax {
+        return StructDeclSyntax(
+            name: "\(raw: function.harborName)Declaration",
+            memberBlock: try MemberBlockSyntax {
+                for parameter in function.decl.signature.parameterClause.parameters {
+                    try MemberBlockItemSyntax(decl: makeVarDecl(parameter: parameter))
+                }
+            }
         )
     }
 
-    static func makeBlock(funcList: String) throws -> MemberBlockSyntax {
-        try MemberBlockSyntax {
+    static func makeVarDecl(parameter: FunctionParameterSyntax) throws -> DeclSyntax {
+        .init(stringLiteral:
+        """
+            public var \(parameter.firstName.text): \(parameter.type.as(IdentifierTypeSyntax.self)!.name.text)?
+        """
+        )
+    }
+
+    static func makeBlock(funcs: [FunctionMap]) throws -> MemberBlockSyntax {
+        let funcList = funcs.map { $0.harborName }.joined(separator: ",")
+        return try MemberBlockSyntax {
             try MemberBlockItemListSyntax {
-                try MemberBlockItemSyntax(decl: makeCase(funcList:funcList))
+                try MemberBlockItemSyntax(decl: makeCase(funcList: funcList))
+//                for function in funcs {
+//                    if !function.decl.parametersAreEmpty {
+//                        try makeNestedBlock(function: function)
+//                    }
+//                }
             }
         }
     }
-
+    
     static func makeCase(funcList: String) throws -> DeclSyntax {
         .init(stringLiteral:
         """
@@ -41,5 +66,5 @@ enum EnumFactory {
         """
         )
     }
-
+    
 }

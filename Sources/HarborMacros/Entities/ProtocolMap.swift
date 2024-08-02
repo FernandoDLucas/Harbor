@@ -24,7 +24,7 @@ extension ProtocolDeclSyntax {
     }
 
     var functionsList: String {
-        functions.map { $0.funcName }.joined(separator: ",")
+        functions.map { $0.funcName }.addNumberToRepeatedNames().joined(separator: ",")
     }
 
 }
