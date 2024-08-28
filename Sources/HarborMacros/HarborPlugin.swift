@@ -10,7 +10,7 @@ public struct HarborPlugin: CompilerPlugin {
     public init() {}
 
     public let providingMacros: [Macro.Type] = [
-        DockMacro.self,
+        DockMacro.self
     ]
 }
 
