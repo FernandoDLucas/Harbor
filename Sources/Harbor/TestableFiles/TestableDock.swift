@@ -3,6 +3,7 @@
 //
 //
 //  Created by Fernando de Lucas da Silva Gomes on 22/07/24.
+//  LinkedIn: https://www.linkedin.com/in/fernandodelucas/
 //
 
 import Foundation

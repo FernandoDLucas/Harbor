@@ -5,52 +5,56 @@
 //  Created by Fernando de Lucas da Silva Gomes on 24/07/24.
 //
 
-import Foundation
-
+/// A class represing a testing function
 public final class Ship<Member: Vessel> {
 
     let id: Member
-    public var error: Error? = nil
-    public var value: Any? = nil
-    public private (set) var invoked: Bool = false
-    public private (set) var parameters = [Any]()
+    private var error: Error? = nil
+    private var value: Any? = nil
+    private var _signal: Bool = false
+    var statements = [Any]()
 
-    public init(id: Member) {
+    init(id: Member) {
         self.id = id
     }
 
-    public func deploy(_ value: Any?) {
-        self.value = value
+    public func action(_ action: Action) {
+        switch action {
+        case .deploy(let any):
+            self.value = any
+        case .anchor(let error):
+            self.error = error
+        }
     }
 
-    public func anchor(_ error: Error) {
-        self.error = error
+    func called() -> Bool {
+        _signal
     }
 
-    public func invoke(_ parameters: [Any]) {
-        invoked = true
-        self.parameters = parameters
+    func signal(_ statements: [Any]) {
+        _signal = true
+        self.statements = statements
     }
 
-    public func result<S>() -> Result<S, Error> {
+    func result<S>() -> Result<S, Error> {
         if let error {
             return .failure(error)
         }
         return .success(value as! S)
     }
 
-    public func `as`<S>(_ type: S.Type) -> S {
+    func `as`<S>(_ type: S.Type) -> S {
         guard let V = value as? S else {
             fatalError("Could not cast")
         }
         return V
     }
 
-    public func `asType`<S>(_ type: S.Type) -> S? {
+    func `asType`<S>(_ type: S.Type) -> S? {
         return value as? S
     }
 
-    public func `try`() throws {
+    func `try`() throws {
         if let error {
             throw error
         }

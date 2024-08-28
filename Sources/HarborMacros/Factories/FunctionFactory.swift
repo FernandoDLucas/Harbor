@@ -57,7 +57,7 @@ enum FunctionFactory {
         let funcName = function.harborName
         let signature = function.decl.signature
         let defaultDecl = HarborStatements.getVessel(funcName).statement
-        let spy = "ship.invoke([\(function.decl.parametersList)])"
+        let spy = "ship.signal([\(function.decl.parametersList)])"
         var throwsDecl: String = ""
         
         if let _ = signature.effectSpecifiers?.throwsSpecifier {

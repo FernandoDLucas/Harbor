@@ -13,6 +13,7 @@ enum EnumFactory {
     
     static func make(
         named: TokenSyntax,
+        isPublic: Bool,
         funcs: [FunctionMap]
     ) throws -> EnumDeclSyntax {
         let typeList = InheritedTypeListSyntax {
@@ -20,6 +21,7 @@ enum EnumFactory {
             InheritedTypeSyntax(type: IdentifierTypeSyntax(name: "Vessel"))
         }
         return .init(
+            modifiers: .make(public: isPublic),
             name: named,
             inheritanceClause: InheritanceClauseSyntax(inheritedTypes: typeList),
             memberBlock: try makeBlock(funcs: funcs)
