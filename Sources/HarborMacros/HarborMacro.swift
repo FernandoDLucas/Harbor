@@ -5,8 +5,11 @@ import SwiftSyntaxMacros
 import SwiftDiagnostics
 
 @main
-struct HarborPlugin: CompilerPlugin {
-    let providingMacros: [Macro.Type] = [
+public struct HarborPlugin: CompilerPlugin {
+
+    public init() {}
+
+    public let providingMacros: [Macro.Type] = [
         DockMacro.self,
     ]
 }
