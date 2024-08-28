@@ -6,7 +6,7 @@ import CompilerPluginSupport
 
 let package = Package(
     name: "Harbor",
-    platforms: [.macOS(.v10_15), .iOS(.v13), .macCatalyst(.v13)],
+    platforms: [.macOS(.v12), .iOS(.v13), .macCatalyst(.v13)],
     products: [
         .library(
             name: "Harbor",
