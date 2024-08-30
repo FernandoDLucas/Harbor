@@ -93,6 +93,10 @@ enum HarborReturnFactory {
     static func findReturnType(_ clause: ReturnClauseSyntax?) -> String? {
         guard let clause,
               let returnType = clause.type.as(IdentifierTypeSyntax.self) else {
+            if let arrayReturn = clause?.type.as(ArrayTypeSyntax.self),
+               let element = arrayReturn.element.as(IdentifierTypeSyntax.self) {
+                return ".as([\(element.name.text)].self)"
+            }
             guard let optionalReturn = clause?.type.as(OptionalTypeSyntax.self),
                   let wrappedType = optionalReturn.wrappedType.as(IdentifierTypeSyntax.self) else {
                 return nil
@@ -107,7 +111,6 @@ enum HarborReturnFactory {
             return ".as(\(returnName).self)"
         }
     }
-
 }
 
 func findType(

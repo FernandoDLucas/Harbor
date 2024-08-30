@@ -18,7 +18,7 @@ extension Dock {
 
     public func check(
         ship: Vessels,
-        with data: (([Any]) -> Bool)?
+        with data: (([Any]) -> Bool)? = nil
     ) -> Bool {
         let ship = dockyard.ship(vessel: ship)
         if let data {

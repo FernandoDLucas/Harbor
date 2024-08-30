@@ -21,6 +21,6 @@ public protocol CargoShip {
     func update(
         id: UUID,
         weight: Int
-    ) throws
+    ) throws -> [String]
 
 }

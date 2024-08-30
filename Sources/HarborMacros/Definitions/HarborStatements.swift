@@ -15,7 +15,7 @@ enum HarborStatements {
         case .throwsReturn:
             return "try ship.try()"
         case .getVessel(let funcName):
-            return "let ship = dockyard.ship(vessel: .\(funcName))"
+            return "let ship = ship(.\(funcName))"
         case .return(let returnType):
             return "return ship\(returnType)"
         case .dockVar(let isPub, let enumName):

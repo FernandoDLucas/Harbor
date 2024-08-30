@@ -41,9 +41,15 @@ public struct DockMacro: PeerMacro {
         let varDecl = DeclSyntax(
             stringLiteral: HarborStatements.dockVar(mappedProtocol.isPublic, enumName.text).statement
         )
+        let protcInit = DeclSyntax(
+            stringLiteral: """
+            \(mappedProtocol.isPublic ? "public" : "") init() {}
+            """
+        )
         var block = MemberBlockSyntax(members: [
             MemberBlockItemSyntax(decl: typeAlias),
             MemberBlockItemSyntax(decl: varDecl),
+            MemberBlockItemSyntax(decl: protcInit),
             MemberBlockItemSyntax(decl: enumdecl)
         ])
 

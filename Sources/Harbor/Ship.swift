@@ -31,30 +31,30 @@ public final class Ship<Member: Vessel> {
         _signal
     }
 
-    func signal(_ statements: [Any]) {
+    public func signal(_ statements: [Any]) {
         _signal = true
         self.statements = statements
     }
 
-    func result<S>() -> Result<S, Error> {
+    public func result<S>() -> Result<S, Error> {
         if let error {
             return .failure(error)
         }
         return .success(value as! S)
     }
 
-    func `as`<S>(_ type: S.Type) -> S {
+    public func `as`<S>(_ type: S.Type) -> S {
         guard let V = value as? S else {
             fatalError("Could not cast")
         }
         return V
     }
 
-    func `asType`<S>(_ type: S.Type) -> S? {
+    public func `asType`<S>(_ type: S.Type) -> S? {
         return value as? S
     }
 
-    func `try`() throws {
+    public func `try`() throws {
         if let error {
             throw error
         }
